@@ -1,0 +1,69 @@
+package com.example.Mediturno.Controller;
+
+import com.example.Mediturno.DTO.paciente.PacienteRequestDTO;
+import com.example.Mediturno.DTO.paciente.PacienteResponseDTO;
+import com.example.Mediturno.Service.PacienteService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+/**
+ * Endpoints:
+ *   GET    /api/pacientes              → listar todos      (ADMIN, RECEPCIONISTA)
+ *   GET    /api/pacientes/{id}         → obtener por id    (ADMIN, RECEPCIONISTA, PACIENTE propio)
+ *   GET    /api/pacientes/cedula/{c}   → obtener por cédula
+ *   POST   /api/pacientes              → crear             (ADMIN, RECEPCIONISTA)
+ *   PUT    /api/pacientes/{id}         → actualizar        (ADMIN, RECEPCIONISTA)
+ *   DELETE /api/pacientes/{id}         → eliminar          (ADMIN)
+ */
+@RestController
+@RequestMapping("/api/pacientes")
+@RequiredArgsConstructor
+public class PacienteController {
+
+    private final PacienteService pacienteService;
+
+    @GetMapping
+    @PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR', 'ROLE_RECEPCIONITA')")
+    public ResponseEntity<List<PacienteResponseDTO>> listar() {
+        return ResponseEntity.ok(pacienteService.obtenerPacientes());
+    }
+
+    @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR', 'ROLE_RECEPCIONITA', 'ROLE_PACIENTE')")
+    public ResponseEntity<PacienteResponseDTO> obtenerPorId(@PathVariable Long id) {
+        return ResponseEntity.ok(pacienteService.obtenerPacientePorId(id));
+    }
+
+    @GetMapping("/cedula/{cedula}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR', 'ROLE_RECEPCIONITA')")
+    public ResponseEntity<PacienteResponseDTO> obtenerPorCedula(@PathVariable String cedula) {
+        return ResponseEntity.ok(pacienteService.obtenerPacientePorCedula(cedula));
+    }
+
+    @PostMapping
+    @PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR', 'ROLE_RECEPCIONITA')")
+    public ResponseEntity<PacienteResponseDTO> crear(@Valid @RequestBody PacienteRequestDTO dto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(pacienteService.crearPaciente(dto));
+    }
+
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR', 'ROLE_RECEPCIONITA')")
+    public ResponseEntity<PacienteResponseDTO> actualizar(
+            @PathVariable Long id,
+            @Valid @RequestBody PacienteRequestDTO dto) {
+        return ResponseEntity.ok(pacienteService.actualizarPaciente(id, dto));
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMINISTRADOR')")
+    public ResponseEntity<Void> eliminar(@PathVariable Long id) {
+        pacienteService.eliminarPaciente(id);
+        return ResponseEntity.noContent().build();
+    }
+}
