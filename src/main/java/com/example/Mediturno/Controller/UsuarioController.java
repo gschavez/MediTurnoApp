@@ -37,6 +37,13 @@ public class UsuarioController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+    // GET /api/usuarios/email/{email}
+    @GetMapping("/email/{email}")
+    public ResponseEntity<Usuario> obtenerPorEmail(@PathVariable String email) {
+        return usuarioService.obtenerUsuarioPorEmail(email)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
     // POST /api/usuarios  → el admin crea médicos o recepcionistas manualmente
     @PostMapping
     public ResponseEntity<Usuario> crear(@RequestBody Usuario usuario) {
