@@ -7,10 +7,10 @@ import com.example.Mediturno.Enumeraciones.EstadoTurno;
 import java.time.LocalDate;
 import java.util.List;
 
-/**
- * Contrato del servicio de Turnos.
- * Define QUÉ puede hacer el sistema con los turnos.
- * El CÓMO queda en la implementación (TurnoServiceImpl).
+/*
+ Contrato del servicio de Turnos.
+ que puede hacer el sistema con los turnos.
+ El como queda en la implementación (TurnoServiceImpl).
  */
 public interface TurnoService {
 
