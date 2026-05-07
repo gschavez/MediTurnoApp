@@ -36,15 +36,22 @@ public class ConfiguracionSeguridad {
                 .sessionManagement(sesion ->
                         sesion.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(autorizacion -> autorizacion
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                        .requestMatchers("/api/pacientes/**").hasAnyRole("PACIENTE", "ADMINISTRADOR", "RECEPCIONISTA")
-                        .requestMatchers("/api/medicos/**").hasAnyRole("MEDICO", "ADMINISTRADOR")
-                        .requestMatchers("/api/especialidades/**").authenticated()
-                        .requestMatchers("/api/turnos/**").authenticated()
-                        .requestMatchers("/api/admin/**").hasRole("ADMINISTRADOR")
-                        .anyRequest().authenticated()
-                );
+    .requestMatchers("/api/auth/**").permitAll()
+    .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+    .requestMatchers(
+        org.springframework.http.HttpMethod.GET,
+        "/api/medicos/**",
+        "/api/horarios/**",
+        "/api/especialidades/**"
+    ).authenticated()
+    .requestMatchers("/api/medicos/**").hasAnyRole("ADMINISTRADOR")
+    .requestMatchers("/api/horarios/**").hasAnyRole("ADMINISTRADOR")
+    .requestMatchers("/api/pacientes/**").hasAnyRole("PACIENTE", "ADMINISTRADOR", "RECEPCIONISTA")
+    .requestMatchers("/api/especialidades/**").authenticated()
+    .requestMatchers("/api/turnos/**").authenticated()
+    .requestMatchers("/api/admin/**").hasRole("ADMINISTRADOR")
+    .anyRequest().authenticated()
+)
 
         http.addFilterBefore(filtroAutenticacionJwt, UsernamePasswordAuthenticationFilter.class);
         return http.build();
