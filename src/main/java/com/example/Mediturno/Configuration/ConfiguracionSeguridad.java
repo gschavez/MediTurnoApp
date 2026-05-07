@@ -51,7 +51,7 @@ public class ConfiguracionSeguridad {
     .requestMatchers("/api/turnos/**").authenticated()
     .requestMatchers("/api/admin/**").hasRole("ADMINISTRADOR")
     .anyRequest().authenticated()
-)
+);
 
         http.addFilterBefore(filtroAutenticacionJwt, UsernamePasswordAuthenticationFilter.class);
         return http.build();
