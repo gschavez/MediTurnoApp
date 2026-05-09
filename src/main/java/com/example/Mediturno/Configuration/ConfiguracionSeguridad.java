@@ -39,15 +39,6 @@ public class ConfiguracionSeguridad {
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/api/pacientes/**").hasAnyRole("PACIENTE", "ADMINISTRADOR", "RECEPCIONISTA")
-                        .requestMatchers(
-                                org.springframework.http.HttpMethod.GET,
-                                "/api/medicos/**",
-                                "/api/horarios/**",
-                                "/api/especialidades/**"
-                        ).authenticated()
-
-                        .requestMatchers("/api/medicos/**").hasRole("ADMINISTRADOR")
-                        .requestMatchers("/api/horarios/**").hasRole("ADMINISTRADOR")
                         .requestMatchers("/api/especialidades/**").authenticated()
                         .requestMatchers("/api/turnos/**").authenticated()
                         .requestMatchers("/api/admin/**").hasRole("ADMINISTRADOR")

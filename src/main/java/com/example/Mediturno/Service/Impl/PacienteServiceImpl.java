@@ -12,7 +12,6 @@ import com.example.Mediturno.Service.PacienteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,12 +27,11 @@ public class PacienteServiceImpl implements PacienteService {
     public PacienteResponseDTO crearPaciente(PacienteRequestDTO dto) {
         if (pacienteRepository.findByCedula(dto.getCedula()).isPresent()) {
             throw new ReglaNegocioException(
-                    "Ya existe un paciente con la cédula: " + dto.getCedula());
+                    "Ya existe un paciente con la cedula: " + dto.getCedula());
         }
         Usuario usuario = usuarioRepository.findById(dto.getUsuarioId())
                 .orElseThrow(() -> new RecursoNoEncontradoException(
                         "Usuario no encontrado con id: " + dto.getUsuarioId()));
-
         Paciente paciente = Paciente.builder()
                 .nombre(dto.getNombre())
                 .apellido(dto.getApellido())
@@ -42,7 +40,6 @@ public class PacienteServiceImpl implements PacienteService {
                 .seguroMedico(dto.getSeguroMedico())
                 .usuario(usuario)
                 .build();
-
         return mapearAResponseDTO(pacienteRepository.save(paciente));
     }
 
@@ -52,19 +49,16 @@ public class PacienteServiceImpl implements PacienteService {
         Paciente paciente = pacienteRepository.findById(id)
                 .orElseThrow(() -> new RecursoNoEncontradoException(
                         "Paciente no encontrado con id: " + id));
-
         if (!paciente.getCedula().equals(dto.getCedula()) &&
                 pacienteRepository.findByCedula(dto.getCedula()).isPresent()) {
             throw new ReglaNegocioException(
-                    "Ya existe un paciente con la cédula: " + dto.getCedula());
+                    "Ya existe un paciente con la cedula: " + dto.getCedula());
         }
-
         paciente.setNombre(dto.getNombre());
         paciente.setApellido(dto.getApellido());
         paciente.setCedula(dto.getCedula());
         paciente.setFechaNacimiento(dto.getFechaNacimiento());
         paciente.setSeguroMedico(dto.getSeguroMedico());
-
         return mapearAResponseDTO(pacienteRepository.save(paciente));
     }
 
@@ -93,7 +87,7 @@ public class PacienteServiceImpl implements PacienteService {
         return pacienteRepository.findByCedula(cedula)
                 .map(this::mapearAResponseDTO)
                 .orElseThrow(() -> new RecursoNoEncontradoException(
-                        "Paciente no encontrado con cédula: " + cedula));
+                        "Paciente no encontrado con cedula: " + cedula));
     }
 
     @Override
@@ -111,11 +105,9 @@ public class PacienteServiceImpl implements PacienteService {
         Usuario usuario = usuarioRepository.findByNombreUsuario(nombreUsuario)
                 .orElseThrow(() -> new RecursoNoEncontradoException(
                         "Usuario no encontrado: " + nombreUsuario));
-
         Paciente paciente = pacienteRepository.findByUsuarioId(usuario.getId())
                 .orElseThrow(() -> new RecursoNoEncontradoException(
-                        "Perfil de paciente no encontrado para: " + nombreUsuario));
-
+                        "Perfil no encontrado para: " + nombreUsuario));
         return mapearAResponseDTO(paciente);
     }
 

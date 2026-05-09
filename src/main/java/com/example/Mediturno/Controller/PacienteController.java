@@ -9,8 +9,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
@@ -20,14 +26,11 @@ public class PacienteController {
 
     private final PacienteService pacienteService;
 
-    // NUEVO: GET /api/pacientes/mi-perfil
-    // El paciente logueado obtiene su propio perfil
     @GetMapping("/mi-perfil")
     @PreAuthorize("hasAnyRole('ROLE_PACIENTE', 'ROLE_ADMINISTRADOR')")
     public ResponseEntity<PacienteResponseDTO> miPerfil(Authentication authentication) {
         String nombreUsuario = authentication.getName();
-        return ResponseEntity.ok(
-                pacienteService.obtenerPacientePorNombreUsuario(nombreUsuario));
+        return ResponseEntity.ok(pacienteService.obtenerPacientePorNombreUsuario(nombreUsuario));
     }
 
     @GetMapping
@@ -44,17 +47,14 @@ public class PacienteController {
 
     @GetMapping("/cedula/{cedula}")
     @PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR', 'ROLE_RECEPCIONITA')")
-    public ResponseEntity<PacienteResponseDTO> obtenerPorCedula(
-            @PathVariable String cedula) {
+    public ResponseEntity<PacienteResponseDTO> obtenerPorCedula(@PathVariable String cedula) {
         return ResponseEntity.ok(pacienteService.obtenerPacientePorCedula(cedula));
     }
 
     @PostMapping
     @PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR', 'ROLE_RECEPCIONITA')")
-    public ResponseEntity<PacienteResponseDTO> crear(
-            @Valid @RequestBody PacienteRequestDTO dto) {
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(pacienteService.crearPaciente(dto));
+    public ResponseEntity<PacienteResponseDTO> crear(@Valid @RequestBody PacienteRequestDTO dto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(pacienteService.crearPaciente(dto));
     }
 
     @PutMapping("/{id}")
