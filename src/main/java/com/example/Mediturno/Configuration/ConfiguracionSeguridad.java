@@ -19,7 +19,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.List;
 
 @Configuration
-@EnableMethodSecurity(prePostEnabled = true)
+@EnableMethodSecurity(prePostEnabled = false)
 public class ConfiguracionSeguridad {
 
     private final FiltroAutenticacionJwt filtroAutenticacionJwt;
@@ -38,11 +38,6 @@ public class ConfiguracionSeguridad {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/medicos/**").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/api/horarios/**").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/api/especialidades/**").authenticated()
-                        .requestMatchers("/api/pacientes/mi-perfil").authenticated()
-                        .requestMatchers("/api/turnos/**").authenticated()
                         .anyRequest().authenticated()
                 );
 
@@ -57,7 +52,8 @@ public class ConfiguracionSeguridad {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOriginPatterns(List.of("*"));
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+        config.setAllowedMethods(
+                List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
