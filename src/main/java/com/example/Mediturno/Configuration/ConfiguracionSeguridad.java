@@ -3,6 +3,7 @@ package com.example.Mediturno.Configuration;
 import com.example.Mediturno.Seguridad.FiltroAutenticacionJwt;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -15,7 +16,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
 import java.util.List;
 
 @Configuration
@@ -35,36 +35,31 @@ public class ConfiguracionSeguridad {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(sesion ->
                         sesion.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(autorizacion -> autorizacion
+                .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                        .requestMatchers("/api/pacientes/**").hasAnyRole("PACIENTE", "ADMINISTRADOR", "RECEPCIONISTA")
-                        .requestMatchers("/api/medicos/**").hasAnyRole("MEDICO", "ADMINISTRADOR")
-                        .requestMatchers("/api/especialidades/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/medicos/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/horarios/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/especialidades/**").authenticated()
+                        .requestMatchers("/api/pacientes/mi-perfil").authenticated()
                         .requestMatchers("/api/turnos/**").authenticated()
-                        .requestMatchers("/api/admin/**").hasRole("ADMINISTRADOR")
                         .anyRequest().authenticated()
                 );
 
-        http.addFilterBefore(filtroAutenticacionJwt, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(
+                filtroAutenticacionJwt,
+                UsernamePasswordAuthenticationFilter.class
+        );
         return http.build();
     }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-
-        config.setAllowedOrigins(List.of(
-                "http://localhost:3000",
-                "http://localhost:5173",
-                "http://localhost:4200",
-                "https://TU-FRONT.onrender.com"  // reemplazá con la URL real del front
-        ));
-
+        config.setAllowedOriginPatterns(List.of("*"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
-
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return source;
@@ -76,8 +71,8 @@ public class ConfiguracionSeguridad {
     }
 
     @Bean
-    public AuthenticationManager administradorAutenticacion(AuthenticationConfiguration configuracion)
-            throws Exception {
+    public AuthenticationManager administradorAutenticacion(
+            AuthenticationConfiguration configuracion) throws Exception {
         return configuracion.getAuthenticationManager();
     }
 }
