@@ -39,6 +39,7 @@ public class ConfiguracionSeguridad {
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/api/pacientes/**").hasAnyRole("PACIENTE", "ADMINISTRADOR", "RECEPCIONISTA")
+                        .requestMatchers("/api/medicos/**").hasAnyRole("MEDICO", "ADMINISTRADOR")
                         .requestMatchers("/api/especialidades/**").authenticated()
                         .requestMatchers("/api/turnos/**").authenticated()
                         .requestMatchers("/api/admin/**").hasRole("ADMINISTRADOR")
