@@ -110,6 +110,15 @@ public class PacienteServiceImpl implements PacienteService {
                         "Perfil no encontrado para: " + nombreUsuario));
         return mapearAResponseDTO(paciente);
     }
+    @Override
+    @Transactional(readOnly = true)
+    public List<PacienteResponseDTO> buscarPorNombre(String nombre) {
+        return pacienteRepository
+                .findByNombreContainingIgnoreCaseOrApellidoContainingIgnoreCase(nombre, nombre)
+                .stream()
+                .map(this::mapearAResponseDTO)
+                .collect(java.util.stream.Collectors.toList());
+    }
 
     private PacienteResponseDTO mapearAResponseDTO(Paciente p) {
         return PacienteResponseDTO.builder()
