@@ -15,8 +15,7 @@ public interface PacienteRepository extends JpaRepository<Paciente,Long> {
     /** Busca un paciente por el ID de su usuario asociado. */
     Optional<Paciente> findByUsuarioId(Long usuarioId);
 
-    List<Paciente> findByNombreContainingIgnoreCaseOrApellidoContainingIgnoreCase(
-            String nombre, String apellido
-    );
+
+
 
 }

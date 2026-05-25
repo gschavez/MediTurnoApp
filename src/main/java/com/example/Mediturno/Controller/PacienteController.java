@@ -72,10 +72,5 @@ public class PacienteController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/nombre/{nombre}")
-    @PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR', 'ROLE_RECEPCIONITA')")
-    public ResponseEntity<List<PacienteResponseDTO>> buscarPorNombre(
-            @PathVariable String nombre) {
-        return ResponseEntity.ok(pacienteService.buscarPorNombre(nombre));
-    }
+
 }

@@ -12,5 +12,5 @@ public interface PacienteService {
     PacienteResponseDTO obtenerPacientePorCedula(String cedula);
     List<PacienteResponseDTO> obtenerPacientes();
     PacienteResponseDTO obtenerPacientePorNombreUsuario(String nombreUsuario);
-    List<PacienteResponseDTO> buscarPorNombre(String nombre);
+
 }
