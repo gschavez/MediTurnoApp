@@ -53,16 +53,15 @@ public class Usuario {
      * Al guardar un Usuario, también se persiste el Paciente asociado (si existe).
      */
 
-    @OneToOne(mappedBy = "com/example/Mediturno/DTO/usuariosss", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private Paciente paciente;
 
     /**
      * Relación uno a uno con Médico.
      */
 
-    @OneToOne(mappedBy = "com/example/Mediturno/DTO/usuariosss", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private Medico medico;
-
     /**
      * Método que se ejecuta automáticamente antes de insertar por primera vez.
      * Establece la fecha de creación.
